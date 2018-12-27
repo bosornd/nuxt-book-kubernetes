@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-db
+  labels:
+    svc: book-db
+spec:
+  selector:
+    matchLabels:
+      svc: book-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        svc: book-db
+    spec:
+      containers:
+      - name: book-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: book-db-storage
+          mountPath: /data/db
+      volumes:
+      - name: book-db-storage
+        persistentVolumeClaim:
+          claimName: book-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-db
+  labels:
+    svc: book-db
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    svc: book-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: book-db-pvc
+  labels:
+    svc: book-db
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-db-api
+  labels:
+    svc: book-db-api
+spec:
+  selector:
+    matchLabels:
+      svc: book-db-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        svc: book-db-api
+    spec:
+      containers:
+      - name: book-db-api
+        image: book-db-api:v1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-db-api
+  labels:
+    svc: book-db-api
+spec:
+  ports:
+  - port: 8080
+  selector:
+    svc: book-db-api

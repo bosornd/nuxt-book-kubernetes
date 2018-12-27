@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db
+  labels:
+    svc: user-db
+spec:
+  selector:
+    matchLabels:
+      svc: user-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        svc: user-db
+    spec:
+      containers:
+      - name: user-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: user-db-storage
+          mountPath: /data/db
+      volumes:
+      - name: user-db-storage
+        persistentVolumeClaim:
+          claimName: user-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-db
+  labels:
+    svc: user-db
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    svc: user-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user-db-pvc
+  labels:
+    svc: user-db
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db-api
+  labels:
+    svc: user-db-api
+spec:
+  selector:
+    matchLabels:
+      svc: user-db-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        svc: user-db-api
+    spec:
+      containers:
+      - name: user-db-api
+        image: user-db-api:v1
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-db-api
+  labels:
+    svc: user-db-api
+spec:
+  ports:
+  - port: 8080
+  selector:
+    svc: user-db-api

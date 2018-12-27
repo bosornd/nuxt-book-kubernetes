@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nuxt-book
+  labels:
+    app: nuxt-book
+spec:
+  selector:
+    matchLabels:
+      app: nuxt-book
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nuxt-book
+        tier: frontend
+    spec:
+      containers:
+      - name: nuxt-book
+        image: nuxt-book:v1
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nuxt-book
+  labels:
+    app: nuxt-book
+spec:
+  ports:
+  - port: 3000
+  selector:
+    app: nuxt-book
+    tier: frontend
+  type: LoadBalancer

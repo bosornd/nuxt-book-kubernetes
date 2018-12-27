@@ -1,0 +1,15 @@
+FROM node:10.14.2
+
+WORKDIR /src
+COPY . .
+
+RUN npm install
+
+RUN npm run build
+EXPOSE 3000
+CMD npm run start
+
+# RUN npm install -g http-server
+# RUN npm run generate
+# EXPOSE 8080
+# CMD npm run generate && http-server dist

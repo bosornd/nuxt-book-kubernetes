@@ -1,0 +1,18 @@
+{
+  "name": "book-db",
+  "version": "1.0.0",
+  "description": "Book DB API",
+  "author": "Yong Jin, Cho <drajin.cho@bosornd.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "mongoose": "^5.4.0",
+    "morgan": "^1.9.1"
+  }
+}
