@@ -7,20 +7,28 @@
 
 # build
 
+<pre><code>
 cd book-db
 docker build -t book-db-api:v1 .
+</code></pre>
 
+<pre><code>
 cd user-db
 docker build -t user-db-api:v1 .
+</code></pre>
 
+<pre><code>
 cd nuxt-book
 docker build -t nuxt-book:v1 .
+</code></pre>
 
 # deploy on kubernetes
 
+<pre><code>
 kubectl apply -f book-db\book-db-api.yaml
 kubectl apply -f user-db\user-db-api.yaml
 kubectl apply -f nuxt-book\nuxt-book.yaml
+</code></pre>
 
 book-db나 user-db 서비스가 생성되기 전에,
 book-db-api, user-db-api pod가 시작되면
